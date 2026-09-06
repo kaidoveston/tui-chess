@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>HelloWorld</RootNamespace>
+    <AssemblyName>HelloWorld</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- Standalone publish settings. Release only; mostly inert until `dotnet publish -r <rid>`. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' != ''">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+    <!-- Terminal.Gui uses reflection: trimming produces runtime failures. Globalization must stay on for box-drawing and text measurement. -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <!-- Run `dotnet add package Terminal.Gui` to pin the current build. -->
+  <ItemGroup>
+    <PackageReference Include="Terminal.Gui" Version="2.4.17" />
+  </ItemGroup>
+
+</Project>
