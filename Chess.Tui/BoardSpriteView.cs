@@ -7,13 +7,13 @@ namespace Chess.Tui;
 
 /// <summary>
 /// Renders a <see cref="Board"/> as an 8x8 grid of piece sprites (see
-/// <see cref="PieceSprites"/>), using the board/piece colors from
-/// thomas-mauran/chess-tui's "Classic" skin.
+/// <see cref="PieceSprites"/>). Piece art is thomas-mauran/chess-tui's
+/// "Classic" skin; board square colors match chess.com's green theme.
 /// </summary>
 public sealed class BoardSpriteView : View
 {
-    private static readonly Color LightSquare = new(240, 217, 181);
-    private static readonly Color DarkSquare = new(181, 136, 99);
+    private static readonly Color LightSquare = new(238, 238, 210);
+    private static readonly Color DarkSquare = new(118, 150, 86);
     private static readonly Color WhitePiece = new(255, 255, 255);
     private static readonly Color BlackPiece = new(20, 20, 20);
 
