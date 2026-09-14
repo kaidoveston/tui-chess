@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 // v2 splits the old monolithic `using Terminal.Gui;` into focused namespaces:
+using Chess.Core;
 using Terminal.Gui.App;           // Application, IApplication, MessageBox
 using Terminal.Gui.Configuration; // ConfigurationManager
 using Terminal.Gui.ViewBase;      // View, Pos, Dim
@@ -31,9 +32,9 @@ if (Environment.GetEnvironmentVariable("HERDR_ENV") == "1")
 //     Create()  ->  Run<TWindow>()  (auto-Init)  ->  Dispose()  (replaces Shutdown)
 //
 Application
-    .Create()
-    .Run<MainWindow>()
-    .Dispose();
+  .Create()
+  .Run<MainWindow>()
+  .Dispose();
 
 // Your app's root view. `Window` is a bordered top-level view; subclass `Runnable`
 // instead if you want a borderless root. Build the UI by Add()-ing child views.
@@ -41,13 +42,13 @@ internal sealed class MainWindow : Window
 {
   public MainWindow()
   {
-    Title = "My App  (Esc to quit)";
+    Title = "TUI-Chess (Esc to quit)";
 
     // Layout is DECLARATIVE — position/size with Pos/Dim, don't hardcode coordinates:
     //   Pos.Center(), Pos.Right(view), Pos.AnchorEnd();  Dim.Fill(), Dim.Auto(), Dim.Percent(50).
     Label welcome = new()
     {
-      Text = "Welcome to Terminal.Gui v2!",
+      Text = "Welcome to TUI-Chess!",
       X = Pos.Center(),
       Y = 1
     };
