@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//  A minimal Terminal.Gui v2 app.  Run it:  dotnet run   (Esc or the button quits)
+//  A minimal Terminal.Gui v2 app.  Run it:  dotnet run   (q quits)
 //
 //  🤖 AI assistants / agents: READ ./AGENTS.md FIRST.
 //     Terminal.Gui v2 is a COMPLETE REWRITE. Pre-2025 training data and most web
@@ -11,11 +11,15 @@ using Chess.Core;
 using Chess.Tui;
 using Terminal.Gui.App;           // Application, IApplication, MessageBox
 using Terminal.Gui.Configuration; // ConfigurationManager
+using Terminal.Gui.Input;         // Command, Key, Bind
 using Terminal.Gui.ViewBase;      // View, Pos, Dim
-using Terminal.Gui.Views;         // Window, Label, Button
+using Terminal.Gui.Views;         // Window
 
 // Enable the configuration/theme system before creating the app (standard first line).
 ConfigurationManager.Enable(ConfigLocations.All);
+
+// Replace the framework's default Quit binding (normally Esc) so 'q' is the only quit key.
+Application.SetDefaultKeyBinding(Command.Quit, Bind.All(Key.Q));
 
 // The default "ansi" driver detects terminal capabilities by sending DSR/DA/Kitty-keyboard
 // query escape sequences and blocking on the response. Herdr (github.com/herdrdev/herdr) has
@@ -43,38 +47,35 @@ internal sealed class MainWindow : Window
 {
   public MainWindow()
   {
-    Title = "TUI-Chess (Esc to quit)";
+    Title = "TUI-Chess (press q to quit)";
 
     // Layout is DECLARATIVE — position/size with Pos/Dim, don't hardcode coordinates:
     //   Pos.Center(), Pos.Right(view), Pos.AnchorEnd();  Dim.Fill(), Dim.Auto(), Dim.Percent(50).
-    Label welcome = new()
+    Board board = new();
+
+    BoardSpriteView boardSpriteView = new(board)
     {
-      Text = "Welcome to TUI-Chess!",
       X = Pos.Center(),
       Y = 1
     };
 
-    Button quit = new()
-    {
-      Text = "_Quit",        // the leading _ defines the hotkey (Alt+Q)
-      X = Pos.Center(),
-      Y = Pos.AnchorEnd()
-    };
-
-    // v2 has NO `Clicked` event. Use `Accepted` for side effects like this — it fires when
-    // the user activates the view (Enter / click / hotkey). Use `Accepting` only to inspect
-    // or cancel the activation (set e.Handled = true). See AGENTS.md (#Events).
-    // `App!` is the running IApplication, reachable from any view in the tree.
-    quit.Accepted += (_, _) => App!.RequestStop();
-
-    BoardView boardView = new(new Board())
-    {
-      X = Pos.Center(),
-      Y = 3
-    };
-
-    Add(welcome, boardView, quit);
+    Add(boardSpriteView);
 
     // 👉 Add your views here. See AGENTS.md for canonical patterns + common pitfalls.
+  }
+
+  // Fires once this Runnable actually starts running under the Application (App is
+  // guaranteed to be set by then, unlike in the constructor). MessageBox.Query is modal
+  // and auto-centers itself, so this reads as a welcome dialog over the board on launch.
+  protected override void OnIsRunningChanged(bool newIsRunning)
+  {
+    base.OnIsRunningChanged(newIsRunning);
+
+    if (!newIsRunning)
+    {
+      return;
+    }
+
+    MessageBox.Query(App!, "TUI-Chess", "Welcome to TUI-Chess!", "_OK");
   }
 }
