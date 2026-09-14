@@ -34,7 +34,28 @@ public sealed class Piece
     _ => throw new ArgumentOutOfRangeException(nameof(Type), Type, null)
   };
 
+  // Unicode has a distinct glyph per color (not a case variant like the ASCII
+  // Symbol), so this switches on both Type and Color via a tuple pattern.
+  public char UnicodeSymbol => (Color, Type) switch
+  {
+    (PieceColor.White, PieceType.Pawn) => '♙',
+    (PieceColor.White, PieceType.Knight) => '♘',
+    (PieceColor.White, PieceType.Bishop) => '♗',
+    (PieceColor.White, PieceType.Rook) => '♖',
+    (PieceColor.White, PieceType.Queen) => '♕',
+    (PieceColor.White, PieceType.King) => '♔',
+    (PieceColor.Black, PieceType.Pawn) => '♟',
+    (PieceColor.Black, PieceType.Knight) => '♞',
+    (PieceColor.Black, PieceType.Bishop) => '♝',
+    (PieceColor.Black, PieceType.Rook) => '♜',
+    (PieceColor.Black, PieceType.Queen) => '♛',
+    (PieceColor.Black, PieceType.King) => '♚',
+    _ => throw new ArgumentOutOfRangeException(nameof(Type), Type, null)
+  };
+
   // White pieces render uppercase, black lowercase — standard FEN/PGN convention.
+  // Kept as-is (rather than switched to Unicode) since plain ASCII letters are
+  // what FEN/PGN export and other engines expect.
   public override string ToString() =>
       (Color == PieceColor.White ? Symbol : char.ToLowerInvariant(Symbol)).ToString();
 }

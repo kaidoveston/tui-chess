@@ -42,7 +42,7 @@ public sealed class BoardView : View
         SetAttribute(new TuiAttribute(foreground, background));
 
         Move(file * SquareWidth, row);
-        AddStr(piece is null ? "   " : $" {piece} ");
+        AddStr(piece is null ? "   " : $" {piece.UnicodeSymbol} ");
       }
     }
 
