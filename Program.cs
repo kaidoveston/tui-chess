@@ -8,6 +8,7 @@
 
 // v2 splits the old monolithic `using Terminal.Gui;` into focused namespaces:
 using Chess.Core;
+using Chess.Tui;
 using Terminal.Gui.App;           // Application, IApplication, MessageBox
 using Terminal.Gui.Configuration; // ConfigurationManager
 using Terminal.Gui.ViewBase;      // View, Pos, Dim
@@ -57,7 +58,7 @@ internal sealed class MainWindow : Window
     {
       Text = "_Quit",        // the leading _ defines the hotkey (Alt+Q)
       X = Pos.Center(),
-      Y = Pos.Center()
+      Y = Pos.AnchorEnd()
     };
 
     // v2 has NO `Clicked` event. Use `Accepted` for side effects like this — it fires when
@@ -66,7 +67,13 @@ internal sealed class MainWindow : Window
     // `App!` is the running IApplication, reachable from any view in the tree.
     quit.Accepted += (_, _) => App!.RequestStop();
 
-    Add(welcome, quit);
+    BoardView boardView = new(new Board())
+    {
+      X = Pos.Center(),
+      Y = 3
+    };
+
+    Add(welcome, boardView, quit);
 
     // 👉 Add your views here. See AGENTS.md for canonical patterns + common pitfalls.
   }
