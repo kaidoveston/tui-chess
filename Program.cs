@@ -22,14 +22,12 @@ ConfigurationManager.Enable(ConfigLocations.All);
 Application.SetDefaultKeyBinding(Command.Quit, Bind.All(Key.Q));
 
 // The default "ansi" driver detects terminal capabilities by sending DSR/DA/Kitty-keyboard
-// query escape sequences and blocking on the response. Herdr (github.com/herdrdev/herdr) has
-// a known bug where it doesn't answer those queries (herdrdev/herdr#393), which leaves the
-// ansi driver stuck mid-startup -> blank screen. The "dotnet" driver talks to the console via
-// System.Console APIs instead, so it doesn't need a response and works fine under Herdr.
-if (Environment.GetEnvironmentVariable("HERDR_ENV") == "1")
-{
-  Application.ForceDriver = "dotnet";
-}
+// query escape sequences and relies on getting an initial terminal size synchronously before
+// any response arrives. That initial size comes back 0 in some real terminals (not just under
+// Herdr, github.com/herdrdev/herdr - herdrdev/herdr#393), which crashes early layout with
+// "width - 3 must be non-negative". The "dotnet" driver talks to the console via System.Console
+// APIs instead, sidestepping ANSI query/size detection entirely, so it's used unconditionally.
+Application.ForceDriver = "dotnet";
 
 // The v2 lifecycle is INSTANCE-BASED and disposable — NOT the static v1
 // Application.Init() / Application.Run() / Application.Shutdown():
